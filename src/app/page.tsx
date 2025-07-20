@@ -1,67 +1,83 @@
-import Link from "next/link";
-
-import { LatestPost } from "~/app/_components/post";
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
 
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
   const session = await auth();
-
-  if (session?.user) {
-    void api.post.getLatest.prefetch();
-  }
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-center mb-8">🚀 О приложении! 🚀</h1>
+        <p className="text-lg text-center mb-10 text-gray-600">
+          Обязательно прочтите перед началом работы — это сделает использование сервиса проще и удобнее!
+        </p>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {/* Карточка профиля */}
+          <div className="bg-white p-6 rounded-lg shadow-md border border-blue-100">
+            <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <span className="text-2xl">👤</span> Страница профиля
+            </h2>
+            <p className="text-gray-700">
+              Ваша визитная карточка в системе! Здесь можно обновить личные данные.
             </p>
-
-            <div className="flex flex-col items-center justify-center gap-4">
-              <p className="text-center text-2xl text-white">
-                {session && <span>Logged in as {session.user?.name}</span>}
-              </p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                {session ? "Sign out" : "Sign in"}
-              </Link>
-            </div>
           </div>
 
-          {session?.user && <LatestPost />}
+          {/* Карточка сотрудников */}
+          <div className="bg-white p-6 rounded-lg shadow-md border border-green-100">
+            <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <span className="text-2xl">👥</span> Страница сотрудников
+            </h2>
+            <p className="text-gray-700">
+              Полный список команды! Все, кто работает в вашем учреждении и имеет доступ к материалам со склада. При оформлении новой выдачи выберите подходящего сотрудника из списка.
+            </p>
+          </div>
+
+          {/* Карточка поставщиков */}
+          <div className="bg-white p-6 rounded-lg shadow-md border border-yellow-100">
+            <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <span className="text-2xl">🤝</span> Страница поставщиков
+            </h2>
+            <p className="text-gray-700">
+              База всех партнеров и их контактов. При оформлении новой поставки выберите подходящего поставщика из списка.
+            </p>
+          </div>
+
+          {/* Карточка материалов */}
+          <div className="bg-white p-6 rounded-lg shadow-md border border-purple-100">
+            <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <span className="text-2xl">📦</span> Страница материалов
+            </h2>
+            <p className="text-gray-700">
+              Здесь — вся информация о товарах на складе. Самостоятельно добавляйте новые материалы, а также меняйте количество материалов в зависимости от поставок и выдач.
+            </p>
+          </div>
+
+          {/* Карточка поставок */}
+          <div className="bg-white p-6 rounded-lg shadow-md border border-red-100">
+            <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <span className="text-2xl">📥</span> Страница поставок
+            </h2>
+            <p className="text-gray-700">
+              Фиксируйте каждое поступление материалов! Указывайте поставщика, количество и дату.
+            </p>
+          </div>
+
+          {/* Карточка выдачи */}
+          <div className="bg-white p-6 rounded-lg shadow-md border border-indigo-100">
+            <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <span className="text-2xl">📤</span> Страница выдачи
+            </h2>
+            <p className="text-gray-700">
+              Учет списания материалов стал проще! Регистрируйте, кому и сколько было выдано.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-10 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-blue-800 text-center">
+            💡 Система обновляет все данные — вам остается только вносить изменения!
+          </p>
         </div>
       </main>
     </HydrateClient>

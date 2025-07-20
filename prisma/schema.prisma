@@ -14,18 +14,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
-}
-
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -56,13 +44,15 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
+    firstmame     String?
+    surname       String?
     name          String?
     email         String?   @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    dispatches    Dispatch[] // Связь с выдачами
 }
 
 model VerificationToken {
@@ -71,4 +61,43 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// Таблица выдач
+model Dispatch {
+  id            String      @id @default(cuid())
+  userId        String
+  material      String
+  quantity      Int
+  date          DateTime
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Таблица материалов
+model Material {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  quantity    Int          @default(0) // Количество на складе
+}
+
+// Таблица связывающая поставки и материалы (чтобы хранить количество поставленного материала)
+
+
+// Таблица поставщиков
+model Supplier {
+  id        String     @id @default(cuid())
+  name      String
+  contact   String?    // Контактная информация
+  supplies  Supply[]   // Связь с поставками
+}
+
+// Таблица поставок
+model Supply {
+  id             String        @id @default(cuid())
+  supplierId     String
+  material       String
+  quantity       Int
+  date           DateTime
+  supplier       Supplier      @relation(fields: [supplierId], references: [id], onDelete: Cascade)
 }
